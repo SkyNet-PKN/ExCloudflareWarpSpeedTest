@@ -6,8 +6,10 @@ import (
 	"log"
 	"net"
 	"os"
+	"os/exec"
 	"strconv"
 	"time"
+	"runtime"
 )
 
 const (
@@ -138,6 +140,17 @@ func (s PingDelaySet) Swap(i, j int) {
 	s[i], s[j] = s[j], s[i]
 }
 
+func RunCmd(cmd string) {
+	if runtime.GOOS == "linux" {
+		cmd="\""+cmd+"\""
+		objCmd := exec.Command("bash", "-c", cmd)
+		objCmd.Run()
+	} else if runtime.GOOS == "windows" {
+		objCmd := exec.Command("cmd", "/c", cmd)
+		objCmd.Run()
+	}
+}
+
 func (s PingDelaySet) Print() {
 	if NoPrintResult() {
 		return
@@ -164,5 +177,12 @@ func (s PingDelaySet) Print() {
 	}
 	if !noOutput() {
 		fmt.Printf("\nComplete speed test results have been written to the %v file.\n", Output)
+		fmt.Printf("Setting the best endpoint and starting Cloudflare Warp...\n")
+
+		RunCmd("warp-cli tunnel endpoint reset")
+		RunCmd("warp-cli tunnel endpoint set " + dataString[0][0])
+		RunCmd("warp-cli connect")
+
+		fmt.Printf("Done\n")
 	}
 }

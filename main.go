@@ -17,16 +17,16 @@ var (
 func init() {
 	var printVersion bool
 	var help = `
-CloudflareWarpSpeedTest ` + Version + `
-Test the latency and speed of all Cloudflare Warp IPs to obtain the lowest latency and port.
+ExCloudflareWarpSpeedTest ` + Version + `
+Test the latency and speed of all Cloudflare Warp IPs to obtain the lowest latency and port. Then set the best endpoint and start Cloudflare Warp.
 
 Parameters:
     -n 200
         Latency test threads; the more threads, the faster the latency test, but do not set it too high on low-performance devices (such as routers); (default 200, maximum 1000)
     -t 10
         Number of latency tests; the number of times to test latency for a single IP; (default 10 times)
-    -c 5000
-        Number of addressed to be scanned; (default 5000)
+    -c 1000
+        Number of addressed to be scanned; (default 1000)
     -all
         All mode; test results for all addresses; Disabled by default, [-all] turns on all mode.
     -ipv6
@@ -61,7 +61,7 @@ Parameters:
 	var maxLossRate float64
 	flag.IntVar(&task.Routines, "n", 200, "Latency test threads")
 	flag.IntVar(&task.PingTimes, "t", 10, "Number of latency test times")
-	flag.IntVar(&task.MaxScanCount, "c", 5000, "Number of addr count")
+	flag.IntVar(&task.MaxScanCount, "c", 1000, "Number of addr count")
 
 	flag.IntVar(&maxDelay, "tl", 300, "Average latency upper limit")
 	flag.IntVar(&minDelay, "tll", 0, "Average latency lower limit")
@@ -95,7 +95,7 @@ func main() {
 	task.InitRandSeed()
 	task.InitHandshakePacket()
 
-	fmt.Printf("CloudflareWarpSpeedTest\n\n")
+	fmt.Printf("ExCloudflareWarpSpeedTest\n\n")
 
 	pingData := task.NewWarping().Run().FilterDelay().FilterLossRate()
 	utils.ExportCsv(pingData)

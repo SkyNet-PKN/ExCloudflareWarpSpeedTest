@@ -51,7 +51,7 @@ var (
 
 	PingTimes = defaultPingTimes
 
-	MaxScanCount = 5000
+	MaxScanCount = 1000
 
 	ports = []int{
 		500, 854, 859, 864, 878, 880, 890, 891, 894, 903,
