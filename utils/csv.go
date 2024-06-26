@@ -142,7 +142,6 @@ func (s PingDelaySet) Swap(i, j int) {
 
 func RunCmd(cmd string) {
 	if runtime.GOOS == "linux" {
-		cmd="\""+cmd+"\""
 		objCmd := exec.Command("bash", "-c", cmd)
 		objCmd.Run()
 	} else if runtime.GOOS == "windows" {
