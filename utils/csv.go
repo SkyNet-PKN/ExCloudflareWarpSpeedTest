@@ -155,7 +155,8 @@ func (s PingDelaySet) Print() {
 		return
 	}
 	if len(s) <= 0 { 
-		fmt.Println("\n[Info] The total number of IP addresses in the complete speed test results is 0, so skipping the output.")
+		fmt.Println("\n[Info] The total number of IP addresses in the complete speed test results is 0, so skipping the output.\n")
+		fmt.Printf("Recommend searching for more IPs if the problem persists.\n")
 		return
 	}
 	dataString := convertToString(s) 
@@ -176,12 +177,16 @@ func (s PingDelaySet) Print() {
 	}
 	if !noOutput() {
 		fmt.Printf("\nComplete speed test results have been written to the %v file.\n", Output)
-		fmt.Printf("Setting the best endpoint and starting Cloudflare Warp...\n")
+		fmt.Printf("Setting the best endpoint and starting Cloudflare Warp...\n\n")
 
-		RunCmd("warp-cli tunnel endpoint reset")
-		RunCmd("warp-cli tunnel endpoint set " + dataString[0][0])
-		RunCmd("warp-cli connect")
-
-		fmt.Printf("Done\n")
+		if dataString[0][1] != "0%" {
+			fmt.Printf("[Info] Loss too high. To ensure connection stability, connection canceled.\n")
+			fmt.Printf("Recommend searching for more IPs if the problem persists.\n")
+		} else {
+			RunCmd("warp-cli tunnel endpoint reset")
+			RunCmd("warp-cli tunnel endpoint set " + dataString[0][0])
+			RunCmd("warp-cli connect")
+			fmt.Printf("Success\n")
+		}
 	}
 }

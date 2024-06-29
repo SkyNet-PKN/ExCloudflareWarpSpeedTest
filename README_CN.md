@@ -19,20 +19,24 @@ Modified from [peanut996/CloudflareWarpSpeedTest](https://github.com/peanut996/C
 > 将默认测速 IP 数改为 1000，因为有可能隔久了前面测过的 IP 就不能用了
 >
 > 修改了自述文档
+>
+> 在测速前自动关闭 warp 以免干扰
+>
+> 增加默认测速线程数
 
 ## 用法
 
 要使用 ExCloudflareWarpSpeedTest，您可以运行以下命令行选项
 
 ```bash
-CloudflareWarpSpeedTest -n 200 -t 10 -c 1000 -tl 300 -q -tll 0 -tlr 0.2 -p 10 -f ip.txt -ip 1.1.1.1 -o result.csv -all
+CloudflareWarpSpeedTest -n 500 -t 10 -c 2500 -tl 300 -q -tll 0 -tlr 0.2 -p 10 -f ip.txt -ip 1.1.1.1 -o result.csv -all
 ```
 
 以下是主要可用选项的解释：
 
-+ `-n`        200：指定延迟测试线程的数量。增加此值可以加快延迟测试过程，但不适合性能较低的设备，如路由器。默认值为 200，最大为 1000。
++ `-n`        500：指定延迟测试线程的数量。增加此值可以加快延迟测试过程，但不适合性能较低的设备，如路由器。默认值为 500，最大为 1000。
 + `-t`        10：设置对每个 IP 地址执行延迟测试的次数。默认值为 10 次。
-+ `-c`        1000: 扫描地址的个数。默认为1000个。
++ `-c`        2500: 扫描地址的个数。默认为2500个。
 + `-ipv6`     ipv6模式：仅扫描ipv6地址。
 + `-o`        result.csv：设置输出结果文件。默认文件为 "result.csv"。
 + `-all`      此标志表示应测试所有的IP和端口的组合。

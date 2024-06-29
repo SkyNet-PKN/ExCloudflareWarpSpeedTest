@@ -18,23 +18,27 @@ Modified from [peanut996/CloudflareWarpSpeedTest](https://github.com/peanut996/C
 >
 > Now the program will automatically set the best endpoint and try to connect.
 >
-> Reduce the default number of addresses to be scanned to 1000. Because in present situation, too long a scan time may cause the previous IP to become invalid.
+> Reduce the default number of addresses to be scanned to 2500. Because in present situation, too long a scan time may cause the previous IP to become invalid.
 >
 > README.md (Obviously)
+>
+> Automatically disable warp before testing speed to avoid interference.
+>
+> Increase the number of testing threads by default.
 
 ## Usage
 
 To use ExCloudflareWarpSpeedTest, you can run the following command-line options:
 
 ```bash
-CloudflareWarpSpeedTest -n 200 -t 10 -c 1000 -tl 300 -q -tll 0 -tlr 0.2 -p 10 -f ip.txt -ip 1.1.1.1 -o result.csv -all
+CloudflareWarpSpeedTest -n 500 -t 10 -c 2500 -tl 300 -q -tll 0 -tlr 0.2 -p 10 -f ip.txt -ip 1.1.1.1 -o result.csv -all
 ```
 
 Here is an explanation of the main available options:
 
-+ `-n`        200: Specifies the number of latency test threads. Increasing this value can speed up the latency testing process, but it may not be suitable for lower-performance devices like routers. The default value is 200, with a maximum of 1000.
++ `-n`        500: Specifies the number of latency test threads. Increasing this value can speed up the latency testing process, but it may not be suitable for lower-performance devices like routers. The default value is 500, with a maximum of 1000.
 + `-t`        10: Sets the number of times latency tests are performed for each IP address. The default value is 10 times.
-+ `-c`        1000: The addressed number to be scanned. The default value is 1000.
++ `-c`        2500: The addressed number to be scanned. The default value is 2500.
 + `-ipv6`     IPv6 mode. Only scan ipv6 addresses.
 + `-o`        result.csv: Sets the output result file. The default file is \"result.csv\".
 + `-all`      This flag indicates that all ip and port will be scanned.

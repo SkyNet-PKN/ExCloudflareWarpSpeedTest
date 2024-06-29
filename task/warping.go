@@ -18,6 +18,8 @@ import (
 	"strconv"
 	"sync"
 	"time"
+	"os/exec"
+	"runtime"
 
 	"github.com/peanut996/CloudflareWarpSpeedTest/utils"
 
@@ -27,7 +29,7 @@ import (
 )
 
 const (
-	defaultRoutines             = 200
+	defaultRoutines             = 500
 	defaultPingTimes            = 10
 	udpConnectTimeout           = time.Millisecond * 1000
 	wireguardHandshakeRespBytes = 92
@@ -51,7 +53,7 @@ var (
 
 	PingTimes = defaultPingTimes
 
-	MaxScanCount = 1000
+	MaxScanCount = 2500
 
 	ports = []int{
 		500, 854, 859, 864, 878, 880, 890, 891, 894, 903,
@@ -106,7 +108,19 @@ type Warping struct {
 	bar     *utils.Bar
 }
 
+func RunCmd(cmd string) {
+	if runtime.GOOS == "linux" {
+		objCmd := exec.Command("bash", "-c", cmd)
+		objCmd.Run()
+	} else if runtime.GOOS == "windows" {
+		objCmd := exec.Command("cmd", "/c", cmd)
+		objCmd.Run()
+	}
+}
+
 func NewWarping() *Warping {
+	RunCmd("warp-cli disconnect")
+	time.Sleep(200 * time.Millisecond)
 	checkPingDefault()
 	ips := loadWarpIPRanges()
 	return &Warping{
