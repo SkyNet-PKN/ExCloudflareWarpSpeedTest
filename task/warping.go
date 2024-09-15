@@ -7,19 +7,21 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"golang.org/x/crypto/blake2s"
-	"golang.org/x/crypto/poly1305"
-	"golang.zx2c4.com/wireguard/tai64n"
 	"log"
 	"math/rand"
 	"net"
 	"net/netip"
+	"os"
+	"os/exec"
+	"runtime"
 	"sort"
 	"strconv"
 	"sync"
 	"time"
-	"os/exec"
-	"runtime"
+
+	"golang.org/x/crypto/blake2s"
+	"golang.org/x/crypto/poly1305"
+	"golang.zx2c4.com/wireguard/tai64n"
 
 	"github.com/peanut996/CloudflareWarpSpeedTest/utils"
 
@@ -29,7 +31,7 @@ import (
 )
 
 const (
-	defaultRoutines             = 500
+	defaultRoutines             = 300
 	defaultPingTimes            = 10
 	udpConnectTimeout           = time.Millisecond * 1000
 	wireguardHandshakeRespBytes = 92
@@ -44,6 +46,8 @@ var (
 	AllMode = false
 
 	IPv6Mode = false
+
+	FastMode = false
 
 	ReservedString = ""
 
@@ -76,6 +80,8 @@ var (
 
 	commonIPv6CIDRs = []string{
 		"2606:4700:d0::/48",
+		"2606:4700:d1::/48",
+		"2606:4700:100::/48",
 	}
 
 	MaxWarpPortRange = 10000
@@ -120,7 +126,7 @@ func RunCmd(cmd string) {
 
 func NewWarping() *Warping {
 	RunCmd("warp-cli disconnect")
-	time.Sleep(200 * time.Millisecond)
+	time.Sleep(300 * time.Millisecond)
 	checkPingDefault()
 	ips := loadWarpIPRanges()
 	return &Warping{
@@ -165,6 +171,17 @@ func (w *Warping) start(ip *UDPAddr) {
 
 func (w *Warping) warpingHandler(ip *UDPAddr) {
 	recv, totalDelay := w.warping(ip)
+
+	if FastMode && (recv == PingTimes) {
+		fmt.Printf("\nAvailable ip found. Connecting...\n")
+		fmt.Println("IP:", ip.FullAddress())
+		fmt.Println("Delay:", totalDelay/time.Duration(recv))
+		RunCmd("warp-cli tunnel endpoint reset")
+		RunCmd("warp-cli tunnel endpoint set " + ip.FullAddress())
+		RunCmd("warp-cli connect")
+		os.Exit(0)
+	}
+
 	nowAble := len(w.csv)
 	if recv != 0 {
 		nowAble++

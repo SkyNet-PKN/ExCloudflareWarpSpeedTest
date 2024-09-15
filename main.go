@@ -21,8 +21,8 @@ ExCloudflareWarpSpeedTest ` + Version + `
 Test the latency and speed of all Cloudflare Warp IPs to obtain the lowest latency and port. Then set the best endpoint and start Cloudflare Warp.
 
 Parameters:
-    -n 500
-        Latency test threads; the more threads, the faster the latency test, but do not set it too high on low-performance devices (such as routers); (default 500, maximum 1000)
+    -n 300
+        Latency test threads; the more threads, the faster the latency test, but do not set it too high on low-performance devices (such as routers); (default 300, maximum 1000)
     -t 10
         Number of latency tests; the number of times to test latency for a single IP; (default 10 times)
     -c 2500
@@ -55,11 +55,13 @@ Parameters:
         Print the help explanation
     -v 
         Print the version
+    -fast
+        Connect first available ip immediately upon testing
 `
 
 	var minDelay, maxDelay int
 	var maxLossRate float64
-	flag.IntVar(&task.Routines, "n", 500, "Latency test threads")
+	flag.IntVar(&task.Routines, "n", 300, "Latency test threads")
 	flag.IntVar(&task.PingTimes, "t", 10, "Number of latency test times")
 	flag.IntVar(&task.MaxScanCount, "c", 2500, "Number of addr count")
 
@@ -77,6 +79,7 @@ Parameters:
 	flag.StringVar(&task.PublicKey, "pub", "", "Specify public key")
 	flag.StringVar(&task.ReservedString, "reserved", "", "Add custom reserved field")
 	flag.BoolVar(&printVersion, "v", false, "Print program version")
+	flag.BoolVar(&task.FastMode, "fast", false, "Connect available ip immediately upon testing")
 
 	flag.Usage = func() { fmt.Print(help) }
 	flag.Parse()

@@ -16,20 +16,20 @@ Modified from [peanut996/CloudflareWarpSpeedTest](https://github.com/peanut996/C
 >
 > 测速后自动选择最佳 IP 连接
 >
-> 将默认测速 IP 数改为 1000，因为有可能隔久了前面测过的 IP 就不能用了
->
 > 修改了自述文档
 >
 > 在测速前自动关闭 warp 以免干扰
 >
 > 增加默认测速线程数
+>
+> 新增 FastMode 模式，发现可用 IP 后立即连接，以避免等待扫描完毕的时间内 IP 失效
 
 ## 用法
 
 要使用 ExCloudflareWarpSpeedTest，您可以运行以下命令行选项
 
 ```bash
-CloudflareWarpSpeedTest -n 500 -t 10 -c 2500 -tl 300 -q -tll 0 -tlr 0.2 -p 10 -f ip.txt -ip 1.1.1.1 -o result.csv -all
+ExCloudflareWarpSpeedTest -n 300 -t 10 -c 2500 -tl 300 -q -tll 0 -tlr 0.2 -p 10 -f ip.txt -ip 1.1.1.1 -o result.csv -all
 ```
 
 以下是主要可用选项的解释：
